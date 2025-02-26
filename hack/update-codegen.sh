@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright 2023 The flock Authors
+# Copyright 2019 The Knative Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,9 @@ set -o nounset
 set -o pipefail
 
 source $(dirname $0)/../vendor/knative.dev/hack/codegen-library.sh
-export PATH="$GOBIN:$PATH"
-K8S_CODEGEN="./vendor/k8s.io/code-generator/cmd"
+
+# If we run with -mod=vendor here, then generate-groups.sh looks for vendor files in the wrong place.
+export GOFLAGS=-mod=
 
 echo "=== Update Codegen for ${MODULE_NAME}"
 
@@ -30,25 +31,18 @@ group "Kubernetes Codegen"
 # --output-base    because this script should also be able to run inside the vendor dir of
 #                  k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
 #                  instead of the $GOPATH directly. For normal projects this can be dropped.
+${CODEGEN_PKG}/kube_codegen.sh "deepcopy,client,informer,lister" \
+  cicd-exp-controller/pkg/ecr/client github.com/aws-controllers-k8s/ecr-controller/apis \
+  "v1alpha1:v1alpha1" \
+  --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
 
-group "ack-ecr-controller codegen"
+group "Knative Codegen"
 
-${CODEGEN_PKG}/generate-groups.sh "client,informer,lister" \
-              github.com/nubank/cicd-exp-controller/pkg/ecr-controller github.com/aws-controllers-k8s/ecr-controller/apis \
-              "rollouts:v1alpha1" \
-              --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
-
-# Generate deep copy functions for other packages.
-go run ${K8S_CODEGEN}/deepcopy-gen/main.go \
-   -O zz_generated.deepcopy \
-   --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt \
-   --input-dirs $(echo \
-                      github.com/nubank/flock/pkg/apis/config \
-                      | sed "s/ /,/g")
-
-
-group "Update Open API schemas"
-${REPO_ROOT_DIR}/hack/update-openapigen.sh
+# Knative Injection
+${KNATIVE_CODEGEN_PKG}/hack/generate-knative.sh "injection" \
+  cicd-exp-controller/pkg/ecr/client github.com/aws-controllers-k8s/ecr-controller/apis \
+  "v1alpha1:v1alpha1" \
+  --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
 
 group "Update deps post-codegen"
 

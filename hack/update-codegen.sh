@@ -14,37 +14,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copied from Sample-Controller
+# https://github.com/knative-extensions/sample-controller/blob/main/hack/update-codegen.sh
+
 set -o errexit
 set -o nounset
 set -o pipefail
 
 source $(dirname $0)/../vendor/knative.dev/hack/codegen-library.sh
-
-# If we run with -mod=vendor here, then generate-groups.sh looks for vendor files in the wrong place.
-export GOFLAGS=-mod=
+export PATH="$GOBIN:$PATH"
 
 echo "=== Update Codegen for ${MODULE_NAME}"
 
 group "Kubernetes Codegen"
 
-# generate the code with:
-# --output-base    because this script should also be able to run inside the vendor dir of
-#                  k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
-#                  instead of the $GOPATH directly. For normal projects this can be dropped.
-${CODEGEN_PKG}/kube_codegen.sh "deepcopy,client,informer,lister" \
-  cicd-exp-controller/pkg/ecr/client github.com/aws-controllers-k8s/ecr-controller/apis \
-  "v1alpha1:v1alpha1" \
-  --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
+source "${CODEGEN_PKG}/kube_codegen.sh"
+
+kube::codegen::gen_client \
+  --boilerplate "${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt" \
+  --output-dir "${REPO_ROOT_DIR}/pkg/client" \
+  --output-pkg "cicd-exp-controller/pkg/client" \
+  --with-watch \
+  "${REPO_ROOT_DIR}/vendor/github.com/aws-controllers-k8s/ecr-controller"
+
+kube::codegen::gen_helpers \
+  --boilerplate "${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt" \
+  "${REPO_ROOT_DIR}/vendor/github.com/aws-controllers-k8s/ecr-controller"
 
 group "Knative Codegen"
 
 # Knative Injection
 ${KNATIVE_CODEGEN_PKG}/hack/generate-knative.sh "injection" \
-  cicd-exp-controller/pkg/ecr/client github.com/aws-controllers-k8s/ecr-controller/apis \
-  "v1alpha1:v1alpha1" \
-  --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
+  cicd-exp-controller/pkg/client github.com/aws-controllers-k8s/ecr-controller \
+  "apis:v1alpha1" \
+  --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt \
+  --force-genreconciler-kinds "Repository"
 
-group "Update deps post-codegen"
+# group "Update CRD Schema"
 
-# Make sure our dependencies are up-to-date
-${REPO_ROOT_DIR}/hack/update-deps.sh
+# go run sigs.k8s.io/controller-tools/cmd/controller-gen@v0.17.1 \
+#   schemapatch:manifests=config,generateEmbeddedObjectMeta=true \
+#   output:dir=config/ \
+#   paths=./pkg/apis/...
+
+# group "Update deps post-codegen"
+# # Make sure our dependencies are up-to-date
+# ${REPO_ROOT_DIR}/hack/update-deps.sh

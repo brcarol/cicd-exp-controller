@@ -1,0 +1,90 @@
+resources:
+  Repository:
+    print:
+      order_by: index
+    fields:
+      Name:
+        is_primary_key: true
+        is_required: true
+        from:
+          operation: CreateRepository
+          path: RepositoryName
+      LifecyclePolicy:
+        from:
+          operation: PutLifecyclePolicy
+          path: LifecyclePolicyText
+      Policy:
+        from:
+          operation: SetRepositoryPolicy
+          path: PolicyText
+      Tags:
+        compare:
+          is_ignored: true
+      RegistryID:
+        late_initialize: {}
+        print:
+          name: REGISTRY-ID
+          index: 0
+      ImageTagMutability:
+        print:
+          name: IMAGE-TAG-MUTABILITY
+          index: 1
+    renames:
+      operations:
+        CreateRepository:
+          input_fields:
+            RepositoryName: Name
+        DeleteRepository:
+          input_fields:
+            RepositoryName: Name
+        DescribeRepositories:
+          input_fields:
+            RepositoryName: Name
+    exceptions:
+      errors:
+        404:
+          code: RepositoryNotFoundException
+    list_operation:
+      match_fields:
+        - Name
+    hooks:
+      delta_pre_compare:
+        code: customPreCompare(delta, a, b)
+      sdk_read_many_post_set_output:
+        template_path: hooks/repository/sdk_read_many_post_set_output.go.tpl
+      sdk_create_post_set_output:
+        template_path: hooks/repository/sdk_create_post_set_output.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/repository/sdk_delete_post_build_request.go.tpl
+    update_operation:
+      custom_method_name: customUpdateRepository
+  PullThroughCacheRule:
+    exceptions:
+      errors:
+        404:
+          code: PullThroughCacheRuleNotFoundException
+    fields:
+      ECRRepositoryPrefix:
+        is_primary_key: true
+        is_immutable: true
+      RegistryID:
+        is_immutable: true
+      UpstreamRegistryURL:
+        is_immutable: true
+    hooks:
+      sdk_read_many_post_build_request:
+        template_path: hooks/pull_through_cache_rule/sdk_read_many_post_build_request.go.tpl
+    list_operation:
+      match_fields:
+        - RegistryId
+        - EcrRepositoryPrefix
+    tags:
+      ignore: true
+ignore:
+  resource_names:
+  - RepositoryCreationTemplate
+  field_paths:
+  - CreatePullThroughCacheRuleOutput.CredentialArn
+  - CreatePullThroughCacheRuleOutput.UpstreamRegistry
+  - CreatePullThroughCacheRuleInput.UpstreamRegistry
+  - CreatePullThroughCacheRuleInput.CredentialArn

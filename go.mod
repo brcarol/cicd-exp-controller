@@ -2,12 +2,20 @@ module cicd-exp-controller
 
 go 1.24.0
 
-require k8s.io/api v0.32.2
+require (
+	github.com/aws-controllers-k8s/ecr-controller v1.0.25
+	k8s.io/api v0.32.2
+	k8s.io/code-generator v0.32.2
+	k8s.io/kube-openapi v0.0.0-20241212222426-2c72e554b1e7
+	knative.dev/hack v0.0.0-20250220110655-b5e4ff820460
+	knative.dev/pkg v0.0.0-20250219013713-9e265611c097
+)
 
 require (
 	contrib.go.opencensus.io/exporter/ocagent v0.7.1-0.20200907061046-05415f1de66d // indirect
 	contrib.go.opencensus.io/exporter/prometheus v0.4.2 // indirect
-	github.com/aws-controllers-k8s/ecr-controller v1.0.25 // indirect
+	github.com/aws-controllers-k8s/runtime v0.43.0 // indirect
+	github.com/aws/aws-sdk-go v1.49.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
@@ -26,7 +34,6 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/gnostic v0.5.7-v3refs // indirect
 	github.com/google/gnostic-models v0.6.9 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
@@ -76,14 +83,10 @@ require (
 	k8s.io/apiextensions-apiserver v0.32.1 // indirect
 	k8s.io/apimachinery v0.32.2 // indirect
 	k8s.io/client-go v0.32.2 // indirect
-	k8s.io/code-generator v0.32.2 // indirect
-	k8s.io/gengo v0.0.0-20220902162205-c0856e24416d // indirect
 	k8s.io/gengo/v2 v2.0.0-20240911193312-2b36238f13e9 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20241212222426-2c72e554b1e7 // indirect
 	k8s.io/utils v0.0.0-20241210054802-24370beab758 // indirect
-	knative.dev/hack v0.0.0-20250220110655-b5e4ff820460 // indirect
-	knative.dev/pkg v0.0.0-20250219013713-9e265611c097 // indirect
+	sigs.k8s.io/controller-runtime v0.19.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.5.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect

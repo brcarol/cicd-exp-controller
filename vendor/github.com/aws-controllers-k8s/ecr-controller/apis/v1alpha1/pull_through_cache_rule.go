@@ -77,6 +77,7 @@ type PullThroughCacheRuleStatus struct {
 // PullThroughCacheRule is the Schema for the PullThroughCacheRules API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type PullThroughCacheRule struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -86,6 +87,7 @@ type PullThroughCacheRule struct {
 
 // PullThroughCacheRuleList contains a list of PullThroughCacheRule
 // +kubebuilder:object:root=true
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type PullThroughCacheRuleList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

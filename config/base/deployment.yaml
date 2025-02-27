@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cicd-exp-controller
+  namespace: cicd-exp-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cicd-exp-controller
+  template:
+    metadata:
+      labels:
+        app: cicd-exp-controller
+    spec:
+      containers:
+      - name: controller
+        image: ko://cicd-exp-controller/cmd/controller
+        # Resources for local environment only.
+        # Limits and requests should be replaced when deploying to production.
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace

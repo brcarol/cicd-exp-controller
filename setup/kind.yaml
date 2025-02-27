@@ -1,0 +1,21 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry]
+    config_path = "/etc/containerd/certs.d"
+nodes:
+- &node
+  role: control-plane
+  image: kindest/node:v1.30.4
+- <<: *node
+  role: worker
+  extraPortMappings:
+      # Promxy
+    - containerPort: 3009${CLUSTER_NUMBER}
+      hostPort: 809${CLUSTER_NUMBER}
+      listenAddress: 0.0.0.0
+
+    # demo
+    - containerPort: 3200${CLUSTER_NUMBER}
+      hostPort: 909${CLUSTER_NUMBER}

@@ -20,7 +20,7 @@
 * [ack-controller](https://aws-controllers-k8s.github.io/community/docs/user-docs/install/)
 
     ```bash
-    export SERVICE=ec3
+    export SERVICE=ecr
     export RELEASE_VERSION=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/${SERVICE}-controller/releases/latest | jq -r '.tag_name | ltrimstr("v")')
     export ACK_SYSTEM_NAMESPACE=ack-system
     export AWS_REGION=us-west-2

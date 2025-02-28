@@ -17,9 +17,6 @@ import (
 func NewController(ctx context.Context, watcher configmap.Watcher) *controller.Impl {
 	logger := logging.FromContext(ctx)
 
-	// configStore := config.NewStore(logger.Named("configs"))
-	// configStore.WatchConfigs(watcher)
-
 	// Add informers
 	informer := repositoryinformer.Get(ctx)
 

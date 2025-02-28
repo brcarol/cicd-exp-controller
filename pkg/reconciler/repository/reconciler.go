@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	// "knative.dev/pkg/logging"
+	"knative.dev/pkg/logging"
 	"knative.dev/pkg/reconciler"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -19,12 +19,12 @@ type RepositoryReconciler struct {
 
 // ReconcileKind implements Interface.ReconcileKind.
 func (r *RepositoryReconciler) ReconcileKind(ctx context.Context, repository *v1alpha1.Repository) reconciler.Event {
-	// logger := logging.FromContext(ctx)
+	logger := logging.FromContext(ctx)
 
-	// logger.Infof("Reconciling Repository %s", repository.Name)
+	logger.Infof("Reconciling Repository %s", repository.Name)
 
-	if _, ok := repository.GetAnnotations()["reconciled"]; ok {
-		// logger.Infof("Repository %s already have the reconciled annotation with value %s", repository.Name, value)
+	if value, ok := repository.GetAnnotations()["reconciled"]; ok {
+		logger.Infof("Repository %s already have the reconciled annotation with value %s", repository.Name, value)
 		return nil
 	}
 

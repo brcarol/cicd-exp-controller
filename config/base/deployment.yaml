@@ -13,7 +13,7 @@ spec:
       labels:
         app: cicd-exp-controller
     spec:
-      serviceAccountName: cicd-exp-controller-sa
+      serviceAccountName: cicd-exp-controller
       containers:
       - name: controller
         image: ko://cicd-exp-controller/cmd/controller

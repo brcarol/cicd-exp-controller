@@ -1,0 +1,52 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cicd-exp-controller
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs: &everything
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterroles
+  verbs:
+  - list
+
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs: *everything
+
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+
+  # For Leader Election
+- apiGroups:
+    - coordination.k8s.io
+  resources:
+    - leases
+  verbs: *everything
+- apiGroups: 
+    - ecr.services.k8s.aws
+  resources: 
+    - repositories
+  verbs: *everything

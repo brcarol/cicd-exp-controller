@@ -5,4 +5,5 @@ verify-codegen:
 	@./hack/verify-codegen.sh
 
 install-dev:
-	@export KO_DOCKER_REPO=localhost:5001 && kustomize build config/base | ko resolve --platform linux/arm64 -f - > ./setup/install-manifests.yaml
+	@export KIND_CLUSTER_NAME=cicd-exp && export KO_DOCKER_REPO=kind.local && kustomize build config/base | ko apply --platform linux/arm64 -f -
+

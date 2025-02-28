@@ -3,18 +3,27 @@
 ## Setup
 
 ### Pre-requisites
+* [ko](https://ko.build/install/)
+    ```bash
+    brew install ko
+    ```
 
 * [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installing-with-a-package-manager)
 
     ```bash
     brew install kind
-    kind create cluster --name cicd-exp-controller
+    kind create cluster --name cicd-exp
     ```
 
 * [helm](https://helm.sh/docs/intro/install/)
 
     ```bash
     brew install helm
+    ```
+* [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
+
+    ```bash
+    brew install kustomize
     ```
 
 * [ack-controller](https://aws-controllers-k8s.github.io/community/docs/user-docs/install/)

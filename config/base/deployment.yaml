@@ -13,6 +13,7 @@ spec:
       labels:
         app: cicd-exp-controller
     spec:
+      serviceAccountName: cicd-exp-controller-sa
       containers:
       - name: controller
         image: ko://cicd-exp-controller/cmd/controller
@@ -30,3 +31,5 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: config-logging
